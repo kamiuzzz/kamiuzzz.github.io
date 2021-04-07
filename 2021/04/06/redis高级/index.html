@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>redis高级 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Redis高级基于黑马Redis的视频的学习笔记 1. Linux环节安装1.1 安装 1.2 启动方式 普通默认端口启动  12345# 默认端口开启redis-serve# 默认端口连接redis-cliCopy   指定端口启动  12345# 换端口启动redis-server --port 6380# 连接客户端指定端口连接redis-cli -p 6380Copy   指定配置文件启动">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis高级">
+<meta property="og:url" content="http://example.com/2021/04/06/redis%E9%AB%98%E7%BA%A7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="Redis高级基于黑马Redis的视频的学习笔记 1. Linux环节安装1.1 安装 1.2 启动方式 普通默认端口启动  12345# 默认端口开启redis-serve# 默认端口连接redis-cliCopy   指定端口启动  12345# 换端口启动redis-server --port 6380# 连接客户端指定端口连接redis-cli -p 6380Copy   指定配置文件启动">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_12_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_13_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_14_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_15_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_16_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_17_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_18_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_20_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_19_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_22_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_21_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_23_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_24_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_25_20210326.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_26_20210327.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_27_20210327.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_28_20210327.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_29_20210327.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_30_20210327.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_31_20210327.png">
+<meta property="article:published_time" content="2021-04-06T11:35:09.000Z">
+<meta property="article:modified_time" content="2021-04-06T11:35:49.156Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_12_20210326.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-redis高级" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/04/06/redis%E9%AB%98%E7%BA%A7/" class="article-date">
+  <time class="dt-published" datetime="2021-04-06T11:35:09.000Z" itemprop="datePublished">2021-04-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      redis高级
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="Redis高级"><a href="#Redis高级" class="headerlink" title="Redis高级"></a>Redis高级</h1><p>基于<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1CJ411m7Gc">黑马Redis</a>的视频的学习笔记</p>
+<h2 id="1-Linux环节安装"><a href="#1-Linux环节安装" class="headerlink" title="1. Linux环节安装"></a>1. Linux环节安装</h2><h3 id="1-1-安装"><a href="#1-1-安装" class="headerlink" title="1.1 安装"></a>1.1 安装</h3><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_12_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_12_20210326.png" alt="img"></a></p>
+<h3 id="1-2-启动方式"><a href="#1-2-启动方式" class="headerlink" title="1.2 启动方式"></a>1.2 启动方式</h3><ul>
+<li>普通默认端口启动</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 默认端口开启</span><br><span class="line">redis-serve</span><br><span class="line"># 默认端口连接</span><br><span class="line">redis-cli</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>指定端口启动</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 换端口启动</span><br><span class="line">redis-server --port 6380</span><br><span class="line"># 连接客户端指定端口连接</span><br><span class="line">redis-cli -p 6380</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>指定配置文件启动 redis-6379.conf</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">port 6379</span><br><span class="line">daemonize yes</span><br><span class="line">logfile &quot;6379.log&quot;</span><br><span class="line">dir &#x2F;redis-4.0.0&#x2F;data</span><br><span class="line">Copy</span><br><span class="line"># 启动</span><br><span class="line">redis-server redis-6379.conf</span><br><span class="line">redis-server conf&#x2F;redis-6379.conf</span><br><span class="line"># 连接</span><br><span class="line">redis-cli</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-持久化"><a href="#2-持久化" class="headerlink" title="2. 持久化"></a>2. 持久化</h2><h3 id="2-1-基本介绍"><a href="#2-1-基本介绍" class="headerlink" title="2.1 基本介绍"></a>2.1 基本介绍</h3><blockquote>
+<p>什么是持久化：</p>
+</blockquote>
+<p>利用永久性存储介质将数据进行保存，在特定的时间将保存的数据进行恢复的工作机制</p>
+<blockquote>
+<p>为什么要持久化：</p>
+</blockquote>
+<p>防止数据的意外丢失，确保数据安全</p>
+<blockquote>
+<p>持久化过程保存什么</p>
+</blockquote>
+<ul>
+<li>将当前<strong>数据状态</strong>进行保存，<strong>快照</strong>形式，存储数据结果，存储格式简单，关注点在<strong>数据</strong></li>
+<li>将数据的<strong>操作过程</strong>进行保存，<strong>日志</strong>形式，存储操作过程，存储格式复杂，关注点在数据的操作<strong>过程</strong></li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_13_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_13_20210326.png" alt="img"></a></p>
+<h3 id="2-2-RDB"><a href="#2-2-RDB" class="headerlink" title="2.2 RDB"></a>2.2 RDB</h3><h4 id="2-2-1-RDB启动方式1–save指令"><a href="#2-2-1-RDB启动方式1–save指令" class="headerlink" title="2.2.1 RDB启动方式1–save指令"></a>2.2.1 RDB启动方式1–save指令</h4><h5 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h5><ul>
+<li><p>命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">save</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>作用</p>
+<p>手动执行一次保存操作</p>
+</li>
+</ul>
+<h5 id="相关配置"><a href="#相关配置" class="headerlink" title="相关配置"></a>相关配置</h5><ul>
+<li>dbfilename dump.rdb<ul>
+<li>说明：设置本地数据库文件名，默认值为 dump.rdb</li>
+<li>经验：通常设置为<strong>dump-<strong><strong>端口号</strong></strong>.rdb</strong></li>
+</ul>
+</li>
+<li>dir<ul>
+<li>说明：设置存储.rdb文件的路径</li>
+<li>经验：通常设置成存储空间较大的目录中，目录名称<strong>data</strong></li>
+</ul>
+</li>
+<li>rdbcompression yes<ul>
+<li>说明：设置存储至本地数据库时是否压缩数据，默认为 yes，采用 LZF 压缩</li>
+<li>经验：通常默认为开启状态，如果设置为no，可以节省 CPU 运行时间，但会使存储的文件变大（巨大）</li>
+</ul>
+</li>
+<li>rdbchecksum yes<ul>
+<li>说明：设置是否进行RDB文件格式校验，该校验过程在写文件和读文件过程均进行</li>
+<li>经验：通常默认为开启状态，如果设置为no，可以节约读写性过程约10%时间消耗，但是存储一定的数据损坏风险</li>
+</ul>
+</li>
+</ul>
+<p>配置后，conf文件内容为：</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_14_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_14_20210326.png" alt="img"></a></p>
+<h5 id="save指令工作原理"><a href="#save指令工作原理" class="headerlink" title="save指令工作原理"></a>save指令工作原理</h5><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_15_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_15_20210326.png" alt="img"></a></p>
+<h4 id="2-2-2-RDB启动方式2–bgsave指令"><a href="#2-2-2-RDB启动方式2–bgsave指令" class="headerlink" title="2.2.2 RDB启动方式2–bgsave指令"></a>2.2.2 RDB启动方式2–bgsave指令</h4><h5 id="启动-1"><a href="#启动-1" class="headerlink" title="启动"></a>启动</h5><ul>
+<li><p>命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bgsave</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>作用</p>
+<p>手动启动后台保存操作，但<strong>不是立即执行</strong></p>
+</li>
+</ul>
+<h5 id="相关配置-1"><a href="#相关配置-1" class="headerlink" title="相关配置"></a>相关配置</h5><ul>
+<li>dbfilename dump.rdb（同save）</li>
+<li>dir（同save）</li>
+<li>rdbcompression yes（同save）</li>
+<li>rdbchecksum yes（同save）</li>
+<li>stop-writes-on-bgsave-error yes<ul>
+<li>说明：后台存储过程中如果出现错误现象，是否停止保存现象</li>
+<li>经验：通常默认为开启状态</li>
+</ul>
+</li>
+</ul>
+<h5 id="bgsave指令工作原理"><a href="#bgsave指令工作原理" class="headerlink" title="bgsave指令工作原理"></a>bgsave指令工作原理</h5><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_16_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_16_20210326.png" alt="img"></a></p>
+<h4 id="2-2-3-RDB启动方式3–save配置"><a href="#2-2-3-RDB启动方式3–save配置" class="headerlink" title="2.2.3 RDB启动方式3–save配置"></a>2.2.3 RDB启动方式3–save配置</h4><h5 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h5><ul>
+<li><p>配置到.conf文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">save second changes</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<p>配置后：</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_17_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_17_20210326.png" alt="img"></a></p>
+</li>
+<li><p>作用</p>
+<p>满足<strong>限定时间</strong>范围内key的变化数量达到<strong>指定数量</strong>即进行持久化</p>
+</li>
+<li><p>参数</p>
+<ul>
+<li>second：监控时间范围</li>
+<li>changes：监控key的变化量</li>
+</ul>
+</li>
+</ul>
+<h5 id="save配置工作原理"><a href="#save配置工作原理" class="headerlink" title="save配置工作原理"></a>save配置工作原理</h5><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_18_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_18_20210326.png" alt="img"></a></p>
+<p>注意：</p>
+<ul>
+<li>save配置要根据实际业务情况进行设置，频度过高或过低都会出现性能问题，结果可能是灾难性的</li>
+<li>save配置中对于second与changes设置通常具有<strong>互补对应</strong>关系（一个大一个小），尽量不要设置成包含性关系</li>
+<li>save配置启动后执行的是<strong>bgsave操作</strong></li>
+</ul>
+<h4 id="2-2-4-三种启动方式对比"><a href="#2-2-4-三种启动方式对比" class="headerlink" title="2.2.4 三种启动方式对比"></a>2.2.4 三种启动方式对比</h4><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>save指令</th>
+<th>bgsave指令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>读写</td>
+<td>同步</td>
+<td>异步</td>
+</tr>
+<tr>
+<td>阻塞客户端指令</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>额外内存消耗</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>启动新线程</td>
+<td>否</td>
+<td>是</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-5-RDB特殊启动形式（了解）"><a href="#2-2-5-RDB特殊启动形式（了解）" class="headerlink" title="2.2.5 RDB特殊启动形式（了解）"></a>2.2.5 RDB特殊启动形式（了解）</h4><ul>
+<li><p>全量复制</p>
+<p>在主从复制中详细讲解</p>
+</li>
+<li><p>服务器运行过程中重启</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">debug reload</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>关闭服务器时指定保存数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">shutdown save</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="2-2-6-RDB优缺点"><a href="#2-2-6-RDB优缺点" class="headerlink" title="2.2.6 RDB优缺点"></a>2.2.6 RDB优缺点</h4><ul>
+<li>优点<ul>
+<li>RDB是一个紧凑压缩的二进制文件，<strong>存储效率较高</strong></li>
+<li>RDB内部存储的是redis在某个时间点的数据快照，非常适合用于<strong>数据备份，全量复制</strong>等场景</li>
+<li>RDB恢复数据的<strong>速度</strong>要比AOF<strong>快</strong>很多</li>
+<li>应用：服务器中每X小时执行bgsave备份，并将RDB文件拷贝到远程机器中，<strong>用于灾难恢复</strong></li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>RDB方式无论是执行指令还是利用配置，<strong>无法做到实时持久化</strong>，具有较大的可能性丢失数据</li>
+<li>bgsave指令每次运行要执行fork操作<strong>创建子进程</strong>，要<strong>牺牲</strong>掉一些<strong>性能</strong></li>
+<li>Redis的众多版本中未进行RDB文件格式的版本统一，有可能出现各版本服务之间数据格式<strong>无法兼容</strong>现象</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-3-AOF"><a href="#2-3-AOF" class="headerlink" title="2.3 AOF"></a>2.3 AOF</h3><h4 id="2-3-1-AOF概念"><a href="#2-3-1-AOF概念" class="headerlink" title="2.3.1 AOF概念"></a>2.3.1 AOF概念</h4><ul>
+<li>AOF(append only file)持久化：以独立日志的方式记录<strong>每次</strong>写命令，重启时再重新执行AOF文件中命令，以达到恢复数据的目的。与RDB相比可以简单描述为改记录数据为记录数据产生的过程</li>
+<li>AOF的主要作用是解决了数据持久化的实时性，目前已经是Redis持久化的<strong>主流</strong>方式</li>
+</ul>
+<h4 id="2-3-2-AOF写数据过程"><a href="#2-3-2-AOF写数据过程" class="headerlink" title="2.3.2 AOF写数据过程"></a>2.3.2 AOF写数据过程</h4><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_20_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_20_20210326.png" alt="img"></a></p>
+<h4 id="2-3-3-AOF写数据三种策略-appendfsync"><a href="#2-3-3-AOF写数据三种策略-appendfsync" class="headerlink" title="2.3.3 AOF写数据三种策略(appendfsync)"></a>2.3.3 AOF写数据三种策略(appendfsync)</h4><ul>
+<li>always（每次）<ul>
+<li>每次写入操作均同步到AOF文件中，<strong>数据零误差</strong>，<strong>性能较低</strong>，<strong>不建议使用</strong></li>
+</ul>
+</li>
+<li>everysec（每秒）<ul>
+<li>每秒将缓冲区中的指令同步到AOF文件中，数据<strong>准确性较高</strong>，<strong>性能较高</strong> ，<strong>建议使用</strong>，也是默认配置</li>
+<li>在系统突然宕机的情况下丢失1秒内的数据</li>
+</ul>
+</li>
+<li>no（系统控制）<ul>
+<li>由操作系统控制每次同步到AOF文件的周期，整体过程<strong>不可控</strong></li>
+</ul>
+</li>
+</ul>
+<h4 id="2-3-4-AOF功能开启"><a href="#2-3-4-AOF功能开启" class="headerlink" title="2.3.4 AOF功能开启"></a>2.3.4 AOF功能开启</h4><ul>
+<li><p>配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">appendonly yes|no</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>作用</li>
+</ul>
+<p>是否开启AOF持久化功能，<strong>默认为不开启状态</strong></p>
+</li>
+<li><p>配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">appendfsync always|everysec|no</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>作用</p>
+<p>AOF写数据策略</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>配置后，conf配置文件如下：</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_19_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_19_20210326.png" alt="img"></a></p>
+<h4 id="2-3-5-AOF相关配置"><a href="#2-3-5-AOF相关配置" class="headerlink" title="2.3.5 AOF相关配置"></a>2.3.5 AOF相关配置</h4><ul>
+<li><p>配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">appendfilename filename</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>作用</li>
+</ul>
+<p>AOF持久化文件名，默认文件名为appendonly.aof，建议配置为appendonly-端口号.aof</p>
+</li>
+<li><p>配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dir</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>作用</p>
+<p>AOF持久化文件保存路径，与RDB持久化文件保持一致即可</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-3-6-AOF重写"><a href="#2-3-6-AOF重写" class="headerlink" title="2.3.6 AOF重写"></a>2.3.6 AOF重写</h4><h5 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h5><ul>
+<li>降低磁盘占用量，提高磁盘利用率</li>
+<li>提高持久化效率，降低持久化写时间，提高IO性能</li>
+<li>降低数据恢复用时，提高数据恢复效率</li>
+</ul>
+<h5 id="规则"><a href="#规则" class="headerlink" title="规则"></a>规则</h5><ul>
+<li>进程内已超时的数据不再写入文件</li>
+<li>忽略无效指令，重写时使用进程内数据直接生成，这样新的AOF文件只保留最终数据的写入命令<ul>
+<li>如del key1、 hdel key2、srem key3、set key4 111、set key4 222等</li>
+</ul>
+</li>
+<li>对同一数据的多条写命令合并为一条命令<ul>
+<li>如lpush list1 a、lpush list1 b、 lpush list1 c 可以转化为：lpush list1 a b c</li>
+<li>为防止数据量过大造成客户端缓冲区溢出，对list、set、hash、zset等类型，每条指令最多写入64个元素</li>
+</ul>
+</li>
+</ul>
+<h5 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h5><ul>
+<li><p>手动重写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bgrewriteaof</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>自动重写</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 1.触发条件设置</span><br><span class="line"># 触发重写的最小大小</span><br><span class="line">auto-aof-rewrite-min-size size </span><br><span class="line"># 触发重写须达到的最小百分比 </span><br><span class="line">auto-aof-rewrite-percentage percentage</span><br><span class="line"></span><br><span class="line"># 2.触发比对参数（ 运行指令info Persistence获取具体信息 ）</span><br><span class="line"># 当前.aof的文件大小</span><br><span class="line">aof_current_size </span><br><span class="line"># 基础文件大小</span><br><span class="line">aof_base_size</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>自动重写触发条件</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_22_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_22_20210326.png" alt="img"></a></p>
+</li>
+</ul>
+<h5 id="重写工作原理"><a href="#重写工作原理" class="headerlink" title="重写工作原理"></a>重写工作原理</h5><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_21_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_21_20210326.png" alt="img"></a></p>
+<h5 id="重写工作流程"><a href="#重写工作流程" class="headerlink" title="重写工作流程"></a>重写工作流程</h5><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_23_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_23_20210326.png" alt="img"></a></p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_24_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_24_20210326.png" alt="img"></a></p>
+<h3 id="2-4-RDB与AOF的区别"><a href="#2-4-RDB与AOF的区别" class="headerlink" title="2.4 RDB与AOF的区别"></a>2.4 RDB与AOF的区别</h3><table>
+<thead>
+<tr>
+<th>持久化方式</th>
+<th>RDB</th>
+<th>AOF</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>占用存储空间</td>
+<td>小（数据级：压缩）</td>
+<td>大（指令级：重写）</td>
+</tr>
+<tr>
+<td>存储速度</td>
+<td>慢</td>
+<td>快</td>
+</tr>
+<tr>
+<td>恢复速度</td>
+<td>快</td>
+<td>慢</td>
+</tr>
+<tr>
+<td>数据安全性</td>
+<td>会丢失数据</td>
+<td>依据策略决定</td>
+</tr>
+<tr>
+<td>资源消耗</td>
+<td>高/重量级</td>
+<td>低/轻量级</td>
+</tr>
+<tr>
+<td>启动优先级</td>
+<td>低</td>
+<td>高</td>
+</tr>
+</tbody></table>
+<h3 id="2-5-RDB与AOF的选择"><a href="#2-5-RDB与AOF的选择" class="headerlink" title="2.5 RDB与AOF的选择"></a>2.5 RDB与AOF的选择</h3><ul>
+<li>对数据非常敏感，建议使用默认的AOF持久化方案<ul>
+<li>AOF持久化策略使用<strong>everysecond</strong>，每秒钟fsync一次。该策略redis仍可以保持很好的处理性能，当出现问题时，最多丢失0-1秒内的数据。</li>
+<li>注意：由于AOF文件<strong>存储体积较大</strong>，且<strong>恢复速度较慢</strong></li>
+</ul>
+</li>
+<li>数据呈现阶段有效性，建议使用RDB持久化方案<ul>
+<li>数据可以良好的做到阶段内无丢失（该阶段是开发者或运维人员手工维护的），且<strong>恢复速度较快</strong>，阶段 点数据恢复通常采用RDB方案</li>
+<li>注意：利用RDB实现紧凑的数据持久化会使Redis降的很低</li>
+</ul>
+</li>
+<li>综合比对<ul>
+<li>RDB与AOF的选择实际上是在做一种权衡，每种都有利有弊</li>
+<li>如不能承受数分钟以内的数据丢失，对业务数据非常<strong>敏感</strong>，选用<strong>AOF</strong></li>
+<li>如能承受数分钟以内的数据丢失，且追求大数据集的<strong>恢复速度</strong>，选用<strong>RDB</strong></li>
+<li><strong>灾难恢复选用RDB</strong></li>
+<li>双保险策略，同时开启 RDB 和 AOF，重启后，Redis优先使用 AOF 来恢复数据，降低丢失数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-事务"><a href="#3-事务" class="headerlink" title="3. 事务"></a>3. 事务</h2><h3 id="3-1-事务简介"><a href="#3-1-事务简介" class="headerlink" title="3.1 事务简介"></a>3.1 事务简介</h3><blockquote>
+<p>redis事务就是一个命令执行的队列，将一系列预定义命令<strong>包装成一个整体</strong>（一个队列）。当执行时，<strong>一次性按照添加顺序依次执行</strong>，中间不会被打断或者干扰</p>
+</blockquote>
+<h3 id="3-2-事务基本操作"><a href="#3-2-事务基本操作" class="headerlink" title="3.2 事务基本操作"></a>3.2 事务基本操作</h3><ul>
+<li><p>开启事务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">multi</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>作用：作设定事务的开启位置，此指令执行后，后续的所有指令均加入到事务中</li>
+</ul>
+</li>
+<li><p>取消事务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">discard</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>作用终止当前事务的定义，发生在multi之后，exec之前</li>
+</ul>
+</li>
+<li><p>执行事务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">exec</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>作用：设定事务的结束位置，同时执行事务。<strong>与multi成对出现</strong>，成对使用</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-3-事务工作流程"><a href="#3-3-事务工作流程" class="headerlink" title="3.3 事务工作流程"></a>3.3 事务工作流程</h3><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_25_20210326.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_25_20210326.png" alt="img"></a></p>
+<h3 id="3-4-事务注意事项"><a href="#3-4-事务注意事项" class="headerlink" title="3.4 事务注意事项"></a>3.4 事务注意事项</h3><p><strong>定义事务的过程中，命令格式输入错误怎么办？</strong></p>
+<ul>
+<li>语法错误<ul>
+<li>指命令书写格式有误 例如执行了一条不存在的指令</li>
+</ul>
+</li>
+<li>处理结果<ul>
+<li>如果定义的事务中所包含的命令存在语法错误，整体事务中<strong>所有命令均不会执行</strong>。包括那些语法正确的命令</li>
+</ul>
+</li>
+</ul>
+<p><strong>定义事务的过程中，命令执行出现错误怎么办？</strong></p>
+<ul>
+<li>运行错误<ul>
+<li>指命令<strong>格式正确</strong>，但是<strong>无法正确的执行</strong>。例如对list进行incr操作</li>
+</ul>
+</li>
+<li>处理结果<ul>
+<li>能够正确运行的命令会执行，运行错误的命令不会被执行</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意</strong>：已经执行完毕的命令对应的数据<strong>不会自动回滚</strong>，需要程序员自己在代码中实现回滚。</p>
+<h3 id="3-5-锁"><a href="#3-5-锁" class="headerlink" title="3.5 锁"></a>3.5 锁</h3><h4 id="3-5-1-基于特定条件的事务执行–锁"><a href="#3-5-1-基于特定条件的事务执行–锁" class="headerlink" title="3.5.1 基于特定条件的事务执行–锁"></a>3.5.1 基于特定条件的事务执行–锁</h4><p>监视锁类似CAS的思想，如果监视对象在事务执行前被修改了，那么就不执行了</p>
+<ul>
+<li><p>对 key 添加监视锁，在执行exec前如果key发生了变化，终止事务执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">watch key1, key2....</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>取消对<strong>所有</strong>key的监视</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">unwatch</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-5-2基于特定条件的事务执行–分布式锁"><a href="#3-5-2基于特定条件的事务执行–分布式锁" class="headerlink" title="3.5.2基于特定条件的事务执行–分布式锁"></a>3.5.2基于特定条件的事务执行–分布式锁</h4><p>分布式锁类似悲观锁的思想，但是只是一个标记</p>
+<ul>
+<li><p>使用 setnx 设置一个公共锁</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 上锁</span><br><span class="line">setnx lock-key value</span><br><span class="line"># 释放锁</span><br><span class="line">del lock-key</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>利用setnx命令的返回值特征，有值（被上锁了）则返回设置失败，无值（没被上锁）则返回设置成功</li>
+<li>操作完毕通过del操作释放锁</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意</strong>：上述解决方案是一种<strong>设计概念</strong>，依赖规范保障，具有风险性</p>
+<h4 id="3-5-3-分布式锁改良"><a href="#3-5-3-分布式锁改良" class="headerlink" title="3.5.3 分布式锁改良"></a>3.5.3 分布式锁改良</h4><ul>
+<li><p>使用 expire 为锁key添加<strong>时间限定</strong>，到时不释放，放弃锁</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">expire lock-key seconds</span><br><span class="line">pexpire lock-key millisecondsCopy</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>由于操作通常都是微秒或毫秒级，因此该锁定时间<strong>不宜设置过大</strong>。具体时间需要业务测试后确认。</p>
+<ul>
+<li>例如：持有锁的操作最长执行时间127ms，最短执行时间7ms。</li>
+<li>测试百万次最长执行时间对应命令的最大耗时，测试百万次网络延迟平均耗时</li>
+<li>锁时间设定推荐：最大耗时<em>120%+平均网络延迟</em>110%</li>
+<li>如果业务最大耗时&lt;&lt;网络平均延迟，通常为2个数量级，取其中单个耗时较长即可</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-删除策略"><a href="#4-删除策略" class="headerlink" title="4. 删除策略"></a>4. 删除策略</h2><h3 id="4-1-数据删除策略"><a href="#4-1-数据删除策略" class="headerlink" title="4.1 数据删除策略"></a>4.1 数据删除策略</h3><ul>
+<li>定时删除</li>
+<li>惰性删除</li>
+<li>定期删除</li>
+</ul>
+<h4 id="时效性数据的存储结构"><a href="#时效性数据的存储结构" class="headerlink" title="时效性数据的存储结构"></a>时效性数据的存储结构</h4><p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_26_20210327.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_26_20210327.png" alt="img"></a></p>
+<h4 id="数据删除策略的目标"><a href="#数据删除策略的目标" class="headerlink" title="数据删除策略的目标"></a>数据删除策略的目标</h4><p>在内存占用与CPU占用之间寻找一种<strong>平衡</strong>，顾此失彼都会造成整体redis性能的下降，甚至引发服务器宕机或内存泄露</p>
+<h3 id="4-2-三种删除策略"><a href="#4-2-三种删除策略" class="headerlink" title="4.2 三种删除策略"></a>4.2 三种删除策略</h3><h4 id="4-2-1-定时删除"><a href="#4-2-1-定时删除" class="headerlink" title="4.2.1 定时删除"></a>4.2.1 定时删除</h4><ul>
+<li>创建一个定时器，当key设置有过期时间，且过期时间到达时，由定时器任务<strong>立即执行</strong>对键的删除操作</li>
+<li>优点：<strong>节约内存</strong>，到时就删除，快速释放掉不必要的内存占用</li>
+<li>缺点：<strong>CPU压力很大</strong>，无论CPU此时负载量多高，均占用CPU，会影响redis服务器响应时间和指令吞吐量</li>
+<li>总结：用处理器性能换取存储空间 （<strong>拿时间换空间</strong>）</li>
+</ul>
+<h4 id="4-2-2-惰性删除"><a href="#4-2-2-惰性删除" class="headerlink" title="4.2.2 惰性删除"></a>4.2.2 惰性删除</h4><ul>
+<li>数据到达过期时间，不做处理。等下次访问该数据时<ul>
+<li>如果未过期，返回数据</li>
+<li>发现已过期，删除，返回不存在</li>
+</ul>
+</li>
+<li>优点：<strong>节约CPU性能</strong>，发现必须删除的时候才删除</li>
+<li>缺点：<strong>内存压力很大</strong>，出现长期占用内存的数据</li>
+<li>总结：用存储空间换取处理器性能 （<strong>拿空间换时间</strong>）</li>
+</ul>
+<h4 id="4-2-3-定期删除（折中方案）"><a href="#4-2-3-定期删除（折中方案）" class="headerlink" title="4.2.3 定期删除（折中方案）"></a>4.2.3 定期删除（折中方案）</h4><ul>
+<li>周期性轮询redis库中的时效性数据，采用<strong>随机抽取的策略</strong>，利用过期数据占比的方式控制删除频度</li>
+<li>特点1：CPU性能占用设置有峰值，检测频度可自定义设置</li>
+<li>特点2：内存压力不是很大，长期占用内存的冷数据会被持续清理</li>
+<li>总结：周期性抽查存储空间 （随机抽查，重点抽查）</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_27_20210327.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_27_20210327.png" alt="img"></a></p>
+<h4 id="4-2-4-删除策略对比"><a href="#4-2-4-删除策略对比" class="headerlink" title="4.2.4 删除策略对比"></a>4.2.4 删除策略对比</h4><table>
+<thead>
+<tr>
+<th>删除策略</th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定时删除</td>
+<td>节约内存，无占用</td>
+<td>不分时段占用CPU资源，频率高</td>
+<td>拿时间换空间</td>
+</tr>
+<tr>
+<td>惰性删除</td>
+<td>内存占用严重</td>
+<td>延时执行，CPU利用率高</td>
+<td>拿空间换时间</td>
+</tr>
+<tr>
+<td>定期删除</td>
+<td>内存定期随机清理</td>
+<td>每秒花费固定的CPU资源维护内存</td>
+<td>随机抽查，重点抽查</td>
+</tr>
+</tbody></table>
+<p>redis内部一般使用惰性删除和定期删除</p>
+<h3 id="4-3-逐出算法（淘汰算法）"><a href="#4-3-逐出算法（淘汰算法）" class="headerlink" title="4.3 逐出算法（淘汰算法）"></a>4.3 逐出算法（淘汰算法）</h3><p>**当新数据进入redis时，如果内存不足怎么办？ **</p>
+<ul>
+<li>Redis使用内存存储数据，在执行每一个命令前，会调用**freeMemoryIfNeeded()*<em>检测内存是否充足。如果内存不满足新加入数据的最低存储要求，redis要临时删除一些数据为当前指令清理存储空间。清理数据的策略称为*<em>逐出算法</em></em></li>
+<li><strong>注意</strong>：逐出数据的过程不是100%能够清理出足够的可使用的内存空间，如果不成功则反复执行。当对所有数据尝试完毕后，如果不能达到内存清理的要求，将出现错误信息。</li>
+</ul>
+<h4 id="4-3-1-影响数据逐出的相关配置"><a href="#4-3-1-影响数据逐出的相关配置" class="headerlink" title="4.3.1 影响数据逐出的相关配置"></a>4.3.1 影响数据逐出的相关配置</h4><ul>
+<li><p>最大可使用内存</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">maxmemory</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<p>占用物理内存的比例，默认值为0，表示不限制。生产环境中根据需求设定，通常设置在50%以上。</p>
+</li>
+<li><p>每次选取待删除数据的个数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">maxmemory-samples</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<p>选取数据时并不会全库扫描，导致严重的性能消耗，降低读写性能。因此采用随机获取数据的方式作为待检测删除数据</p>
+</li>
+<li><p>删除策略</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">maxmemory-policy</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<p>达到最大内存后的，对被挑选出来的数据进行删除的策略</p>
+</li>
+<li><p>删除策略包括以下8种不同设置：</p>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_28_20210327.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_28_20210327.png" alt="img"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 配置方式</span><br><span class="line">maxmemory-policy volatile-lru</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="4-3-2-数据逐出策略配置依据"><a href="#4-3-2-数据逐出策略配置依据" class="headerlink" title="4.3.2 数据逐出策略配置依据"></a>4.3.2 数据逐出策略配置依据</h4><ul>
+<li>使用<strong>INFO命令</strong>输出监控信息，查询缓存 <strong>hit 和 miss</strong> 的次数，根据业务需求调优Redis配置</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_29_20210327.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_29_20210327.png" alt="img"></a></p>
+<h2 id="5-服务器基础配置"><a href="#5-服务器基础配置" class="headerlink" title="5. 服务器基础配置"></a>5. 服务器基础配置</h2><h3 id="5-1-服务器端设定"><a href="#5-1-服务器端设定" class="headerlink" title="5.1 服务器端设定"></a>5.1 服务器端设定</h3><p>设置到conf文件中</p>
+<ul>
+<li>设置服务器以守护进程的方式运行</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">daemonize yes | no</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>绑定主机地址</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bind 127.0.0.1</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置服务器端口号</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">port 6379</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>设置数据库数量</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">database 16</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_30_20210327.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_30_20210327.png" alt="img"></a></p>
+<h3 id="5-2-日志配置"><a href="#5-2-日志配置" class="headerlink" title="5.2 日志配置"></a>5.2 日志配置</h3><ul>
+<li>设置服务器以指定日志记录级别</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">loglevel debug|verbose|notice|warning</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>日志记录文件名</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">logfile 端口号.log</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<p>注意：日志级别开发期设置为verbose即可，生产环境中配置为notice，简化日志输出量，降低写日志IO的频率</p>
+<h3 id="5-3-客户端配置"><a href="#5-3-客户端配置" class="headerlink" title="5.3 客户端配置"></a>5.3 客户端配置</h3><ul>
+<li>设置同一时间最大客户端连接数，默认无限制。当客户端连接达到上限，Redis会关闭新的连接</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">maxclients 0</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>客户端闲置等待最大时长，达到最大值后关闭连接。如需关闭该功能，设置为0</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">timeout 300</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-4-多服务器快捷配置"><a href="#5-4-多服务器快捷配置" class="headerlink" title="5.4 多服务器快捷配置"></a>5.4 多服务器快捷配置</h3><ul>
+<li>导入并加载指定配置文件信息，用于快速船舰redis公共配置较多的redis实例配置文件，便于维护</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">include &#x2F;path&#x2F;server-端口号.conf</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-高级数据类型"><a href="#6-高级数据类型" class="headerlink" title="6. 高级数据类型"></a>6. 高级数据类型</h2><h3 id="6-1-Bitmaps"><a href="#6-1-Bitmaps" class="headerlink" title="6.1 Bitmaps"></a>6.1 Bitmaps</h3><h4 id="6-1-1-基础操作"><a href="#6-1-1-基础操作" class="headerlink" title="6.1.1 基础操作"></a>6.1.1 基础操作</h4><ul>
+<li><p>获取指定key对应偏移量上的bit值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">getbit key offset</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>设置指定key对应偏移量上的bit值，value只能是1或0</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">setbit key offset value</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="6-1-2-扩展操作"><a href="#6-1-2-扩展操作" class="headerlink" title="6.1.2 扩展操作"></a>6.1.2 扩展操作</h4><ul>
+<li><p>对指定key按位进行交、并、非、异或操作，并将结果<strong>保存到destKey</strong>中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bitop op destKey key1 [key2...]</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>and：交</li>
+<li>or：并</li>
+<li>not：非</li>
+<li>xor：异或</li>
+</ul>
+</li>
+<li><p>统计指定key中1的数量</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bitcount key [start end]</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="6-2-HyperLogLog"><a href="#6-2-HyperLogLog" class="headerlink" title="6.2 HyperLogLog"></a>6.2 HyperLogLog</h3><h4 id="6-2-1-基数"><a href="#6-2-1-基数" class="headerlink" title="6.2.1 基数"></a>6.2.1 基数</h4><ul>
+<li>基数是数据集<strong>去重后元素个数</strong></li>
+<li>HyperLogLog 是用来做基数统计的，运用了LogLog的算法</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_31_20210327.png"><img src="https://cdn.jsdelivr.net/gh/LihengXu/mycdn/img/Redis_31_20210327.png" alt="img"></a></p>
+<h4 id="6-2-2-基本操作"><a href="#6-2-2-基本操作" class="headerlink" title="6.2.2 基本操作"></a>6.2.2 基本操作</h4><ul>
+<li><p>添加数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pfadd key element1, element2...</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>统计数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pfcount key1 key2....</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>合并数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pfmerge destkey sourcekey [sourcekey...]</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="6-2-3-相关说明"><a href="#6-2-3-相关说明" class="headerlink" title="6.2.3 相关说明"></a>6.2.3 相关说明</h4><ul>
+<li>用于进行基数统计，<strong>不是集合，不保存数据</strong>，只记录数量而不是具体数据</li>
+<li>核心是基数估算算法，最终数值<strong>存在一定误差</strong></li>
+<li>误差范围：基数估计的结果是一个带有 0.81% 标准错误的近似值</li>
+<li><strong>耗空间极小</strong>，每个hyperloglog key占用了12K的内存用于标记基数</li>
+<li>pfadd命令不是一次性分配12K内存使用，会随着基数的增加内存<strong>逐渐增大</strong></li>
+<li>Pfmerge命令<strong>合并后占用</strong>的存储空间为<strong>12K</strong>，无论合并之前数据量多少</li>
+</ul>
+<h3 id="6-3-GEO"><a href="#6-3-GEO" class="headerlink" title="6.3 GEO"></a>6.3 GEO</h3><h4 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h4><ul>
+<li><p>添加坐标点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">geoadd key longitude latitude member [longitude latitude member ...] </span><br><span class="line">georadius key longitude latitude radius m|km|ft|mi [withcoord] [withdist] [withhash] [count count]</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>获取坐标点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">geopos key member [member ...] </span><br><span class="line">georadiusbymember key member radius m|km|ft|mi [withcoord] [withdist] [withhash] [count count]</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+<li><p>计算坐标点距离</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">geodist key member1 member2 [unit] </span><br><span class="line">geohash key member [member ...]</span><br><span class="line">Copy</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/04/06/redis%E9%AB%98%E7%BA%A7/" data-id="ckn6taruq0004noub47ooef7n" data-title="redis高级" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/04/06/redis%E9%9B%86%E7%BE%A4%E4%B8%8E%E4%BC%81%E4%B8%9A%E7%BA%A7%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          redis集群与企业级解决方案
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/04/06/redis%E5%9F%BA%E7%A1%80/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">redis基础</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/04/07/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/06/redis%E9%9B%86%E7%BE%A4%E4%B8%8E%E4%BC%81%E4%B8%9A%E7%BA%A7%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/">redis集群与企业级解决方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/06/redis%E9%AB%98%E7%BA%A7/">redis高级</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/06/redis%E5%9F%BA%E7%A1%80/">redis基础</a>
+          </li>
+        
+          <li>
+            <a href="/2021/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%80%BB%E7%BB%93/">计算机网络总结</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
